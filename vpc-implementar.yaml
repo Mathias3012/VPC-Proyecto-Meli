@@ -1,4 +1,4 @@
-template-file-path: VPC-Proyecto-Meli/configuracion VPC v1.txt
+template-file-path: ./VPC-Proyecto-Meli/configuracion VPC v1.txt
 parameters: {}
 tags:
   VPC-Proyecto-Meli: Meli
