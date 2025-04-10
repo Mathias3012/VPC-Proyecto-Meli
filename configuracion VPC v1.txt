@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS CloudFormation VPC para proyecto Meli"
+# informacion basica sobre la configuracion del archivo: 
+
+# A VPC with the CIDR block 10.30.0.0/16 is created, with DNS support and hostnames enabled.
+#  Subnets:
+
+#  Two public subnets:
+#     10.30.1.0/24 in sa-east-1a.
+#     10.30.3.0/24 in sa-east-1b.
+
+#  Two private subnets:
+#    10.30.2.0/24 in sa-east-1a.
+#    10.30.4.0/24 in sa-east-1b.
+
+#  Elastic IP and NAT Gateway:
+
+#  An Elastic IP is allocated for the NAT Gateway.
+#  The NAT Gateway is placed in the first public subnet (10.30.1.0/24).
+
+Resources:
+  # VPC - configuracion basica de la vpc para el proyecto
+  # Tipo de IP Clase A
+
+  MyVPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: "10.30.0.0/16"
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: "VPC-proyecto Meli"
+          Value: "VPC-proyecto Meli"
+
+#  En la siguiente seccion se especifica la configuracion de la subnet publica y privada numero 1:
+#  AvailabilityZone predeterminada : sa-east-1a
+
+  # subnet publica numero 1 
+  PublicSubnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.30.1.0/24"
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: sa-east-1a
+      Tags:
+        - Key: "Subnet publica Meli numero 1"
+          Value: "Subnet publica Meli numero 1"
+
+ # subnet privada numero 1 
+  PrivateSubnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.30.2.0/24"
+      AvailabilityZone: sa-east-1a
+      Tags:
+        - Key: "Subnet privada Meli numero 1"
+          Value: "Subnet privada Meli numero 1"
+
+#  En la siguiente seccion se especifica la configuracion de la subnet publica y privada numero 2:
+#  AvailabilityZone predeterminada : sa-east-1b
+
+ # subnet publica numero 2
+  PublicSubnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.30.3.0/24"
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: sa-east-1b
+      Tags:
+        - Key: "Subnet publica Meli numero 2"
+          Value: "Subnet publica Meli numero 2"
+
+
+  # subnet privada numero 2
+  PrivateSubnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.30.4.0/24"
+      AvailabilityZone: sa-east-1b
+      Tags:
+        - Key: "Subnet privada Meli numero 2"
+          Value: "Subnet privada Meli numero 2"
+
+  # Internet Gateway
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: "Gateway proyecto Meli"
+          Value: "Internet Gateway"
+
+  AttachGateway:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Public Route Table
+  PublicRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: "Public Route Proyecto Meli"
+          Value: "Public Route Table"
+
+  # Public Route
+  PublicRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref InternetGateway
+
+  # Associate Public Subnets with Public Route Table
+  PublicSubnet1RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # Elastic IP for NAT Gateway
+  NatGatewayElasticIP:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: "vpc"
+      Tags:
+        - Key: "Nat gateway"
+          Value: "NAT Gateway Elastic IP"
+
+  # NAT Gateway in Public Subnet 1
+  NatGateway:
+    Type: "AWS::EC2::NatGateway"
+    Properties:
+      AllocationId: !GetAtt NatGatewayElasticIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: "NAT para subnet publica 1"
+          Value: "NAT Gateway"
+
+  # Private Route Table
+  PrivateRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: "Private Route Table"
+          Value: "Private Route Table"
+
+  # Private Route for NAT Gateway
+  PrivateRoute:
+    Type: "AWS::EC2::Route"
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref NatGateway
+
+  # Associate Private Subnets with Private Route Table
+  PrivateSubnet1RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+Outputs:
+  VPCId:
+    Description: "VPC ID"
+    Value: !Ref MyVPC
+  PublicSubnet1Id:
+    Description: "Public Subnet 1 ID"
+    Value: !Ref PublicSubnet1
+  PublicSubnet2Id:
+    Description: "Public Subnet 2 ID"
+    Value: !Ref PublicSubnet2
+  PrivateSubnet1Id:
+    Description: "Private Subnet 1 ID"
+    Value: !Ref PrivateSubnet1
+  PrivateSubnet2Id:
+    Description: "Private Subnet 2 ID"
+    Value: !Ref PrivateSubnet2
+  InternetGatewayId:
+    Description: "Internet Gateway ID"
+    Value: !Ref InternetGateway
+  NatGatewayId:
+    Description: "NAT Gateway ID"
+    Value: !Ref NatGateway
