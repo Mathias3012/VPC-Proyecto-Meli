@@ -1,4 +1,4 @@
-template-file-path: main/VPC-Proyecto-Meli/vpc-implementar.yam
+template-file-path: main/VPC-Proyecto-Meli/vpc-implementar.yaml
 parameters: {}
 tags:
   VPC-Proyecto-Meli: Meli
