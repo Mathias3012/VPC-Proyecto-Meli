@@ -2,16 +2,16 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: "AWS CloudFormation VPC para proyecto Meli"
 # informacion basica sobre la configuracion del archivo: 
 
-# A VPC with the CIDR block 10.30.0.0/16 is created, with DNS support and hostnames enabled.
+# se crea una VPC con CIDR block 10.30.0.0/16,
 #  Subnets:
 
-#  Two public subnets:
-#     10.30.1.0/24 in sa-east-1a.
-#     10.30.3.0/24 in sa-east-1b.
+#  2 subnets publicas:
+#     10.30.1.0/24 en sa-east-1a.
+#     10.30.3.0/24 en sa-east-1b.
 
-#  Two private subnets:
-#    10.30.2.0/24 in sa-east-1a.
-#    10.30.4.0/24 in sa-east-1b.
+#  2 subnets privadas:
+#    10.30.2.0/24 en sa-east-1a.
+#    10.30.4.0/24 en sa-east-1b.
 
 Resources:
   # VPC - configuracion basica de la vpc para el proyecto
