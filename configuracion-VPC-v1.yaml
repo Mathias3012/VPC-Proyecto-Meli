@@ -13,16 +13,7 @@ Description: "AWS CloudFormation VPC para proyecto Meli"
 #    10.30.2.0/24 in sa-east-1a.
 #    10.30.4.0/24 in sa-east-1b.
 
-#  Elastic IP and NAT Gateway:
-
-#  An Elastic IP is allocated for the NAT Gateway.
-#  The NAT Gateway is placed in the first public subnet (10.30.1.0/24).
-
 Resources:
-  # VPC - configuracion basica de la vpc para el proyecto
-  # Tipo de IP Clase A
-
-  esources:
   # VPC - configuracion basica de la vpc para el proyecto
   # Tipo de IP Clase A
 
