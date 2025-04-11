@@ -22,6 +22,10 @@ Resources:
   # VPC - configuracion basica de la vpc para el proyecto
   # Tipo de IP Clase A
 
+  esources:
+  # VPC - configuracion basica de la vpc para el proyecto
+  # Tipo de IP Clase A
+
   MyVPC:
     Type: "AWS::EC2::VPC"
     Properties:
@@ -31,9 +35,6 @@ Resources:
       Tags:
         - Key: "VPC-proyecto Meli"
           Value: "VPC-proyecto Meli"
-
-#  En la siguiente seccion se especifica la configuracion de la subnet publica y privada numero 1:
-#  AvailabilityZone predeterminada : sa-east-1a
 
   # subnet publica numero 1 
   PublicSubnet1:
@@ -47,7 +48,7 @@ Resources:
         - Key: "Subnet publica Meli numero 1"
           Value: "Subnet publica Meli numero 1"
 
- # subnet privada numero 1 
+  # subnet privada numero 1 
   PrivateSubnet1:
     Type: "AWS::EC2::Subnet"
     Properties:
@@ -58,10 +59,7 @@ Resources:
         - Key: "Subnet privada Meli numero 1"
           Value: "Subnet privada Meli numero 1"
 
-#  En la siguiente seccion se especifica la configuracion de la subnet publica y privada numero 2:
-#  AvailabilityZone predeterminada : sa-east-1b
-
- # subnet publica numero 2
+  # subnet publica numero 2
   PublicSubnet2:
     Type: "AWS::EC2::Subnet"
     Properties:
@@ -72,7 +70,6 @@ Resources:
       Tags:
         - Key: "Subnet publica Meli numero 2"
           Value: "Subnet publica Meli numero 2"
-
 
   # subnet privada numero 2
   PrivateSubnet2:
@@ -130,25 +127,6 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-  # Elastic IP for NAT Gateway
-  NatGatewayElasticIP:
-    Type: "AWS::EC2::EIP"
-    Properties:
-      Domain: "vpc"
-      Tags:
-        - Key: "Nat gateway"
-          Value: "NAT Gateway Elastic IP"
-
-  # NAT Gateway in Public Subnet 1
-  NatGateway:
-    Type: "AWS::EC2::NatGateway"
-    Properties:
-      AllocationId: !GetAtt NatGatewayElasticIP.AllocationId
-      SubnetId: !Ref PublicSubnet1
-      Tags:
-        - Key: "NAT para subnet publica 1"
-          Value: "NAT Gateway"
-
   # Private Route Table
   PrivateRouteTable:
     Type: "AWS::EC2::RouteTable"
@@ -157,14 +135,6 @@ Resources:
       Tags:
         - Key: "Private Route Table"
           Value: "Private Route Table"
-
-  # Private Route for NAT Gateway
-  PrivateRoute:
-    Type: "AWS::EC2::Route"
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable
-      DestinationCidrBlock: "0.0.0.0/0"
-      NatGatewayId: !Ref NatGateway
 
   # Associate Private Subnets with Private Route Table
   PrivateSubnet1RouteTableAssociation:
@@ -198,6 +168,3 @@ Outputs:
   InternetGatewayId:
     Description: "Internet Gateway ID"
     Value: !Ref InternetGateway
-  NatGatewayId:
-    Description: "NAT Gateway ID"
-    Value: !Ref NatGateway
