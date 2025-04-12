@@ -144,18 +144,35 @@ Outputs:
   VPCId:
     Description: "VPC ID"
     Value: !Ref MyVPC
+    Export:
+      Name: VPC-proyecto-Meli
+
   PublicSubnet1Id:
     Description: "Public Subnet 1 ID"
     Value: !Ref PublicSubnet1
+    Export:
+      Name: PublicSubnet1-proyecto-Meli
+
   PublicSubnet2Id:
     Description: "Public Subnet 2 ID"
     Value: !Ref PublicSubnet2
+    Export:
+      Name: PublicSubnet2-proyecto-Meli
+
   PrivateSubnet1Id:
     Description: "Private Subnet 1 ID"
     Value: !Ref PrivateSubnet1
+    Export:
+      Name: PrivateSubnet1-proyecto-Meli
+
   PrivateSubnet2Id:
     Description: "Private Subnet 2 ID"
     Value: !Ref PrivateSubnet2
+    Export:
+      Name: PrivateSubnet2-proyecto-Meli
+
   InternetGatewayId:
     Description: "Internet Gateway ID"
     Value: !Ref InternetGateway
+    Export:
+      Name: IGW-proyecto-Meli
